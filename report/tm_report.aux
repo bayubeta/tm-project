@@ -19,29 +19,96 @@
 \providecommand\HyField@AuxAddToCoFields[2]{}
 \providecommand\BKM@entry[2]{}
 \bibstyle{unsrtnat}
-\BKM@entry{id=1,dest={73656374696F6E2E31},srcline={16}}{496E74726F64756374696F6E}
+\BKM@entry{id=1,dest={73656374696F6E2E31},srcline={17}}{496E74726F64756374696F6E}
 \citation{Jurafsky2009}
+\citation{pennington2014glove}
 \citation{mikolov2013efficient}
 \citation{devlin-etal-2019-bert}
-\BKM@entry{id=2,dest={73656374696F6E2E32},srcline={27}}{5468656F7279}
-\BKM@entry{id=3,dest={73656374696F6E2E33},srcline={32}}{44617461}
-\citation{maas-etal-2011-learning}
+\citation{spacy}
+\citation{sanh2020distilbert}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
-\citation{maas-etal-2011-learning}
-\BKM@entry{id=4,dest={73656374696F6E2E34},srcline={64}}{4D6574686F64}
-\BKM@entry{id=5,dest={73656374696F6E2E35},srcline={71}}{526573756C7473}
-\BKM@entry{id=6,dest={73656374696F6E2E36},srcline={82}}{44697363757373696F6E}
-\BKM@entry{id=7,dest={73656374696F6E2E37},srcline={92}}{436F6E636C7573696F6E}
+\BKM@entry{id=2,dest={73656374696F6E2E32},srcline={28}}{5468656F7279}
+\BKM@entry{id=3,dest={73756273656374696F6E2E322E31},srcline={30}}{5465726D204672657175656E637920616E64204261672D6F662D776F726473204D6F64656C}
+\citation{Jurafsky2009}
+\citation{Jurafsky2009}
+\citation{Jurafsky2009}
+\BKM@entry{id=4,dest={73756273656374696F6E2E322E32},srcline={43}}{54462D494446}
 \@writefile{toc}{\contentsline {section}{\numberline {2}Theory}{2}{section.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3}Data}{2}{section.3}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Overview of the dataset. The reviews shown in the table are from the training set with the top five rows as the first five negative reviews and the five rows below that as the first five positive reviews.}}{2}{table.1}\protected@file@percent }
-\newlabel{table:overview}{{1}{2}{Overview of the dataset. The reviews shown in the table are from the training set with the top five rows as the first five negative reviews and the five rows below that as the first five positive reviews}{table.1}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Method}{2}{section.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5}Results}{2}{section.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{2}{section.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion}{2}{section.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Term Frequency and Bag-of-words Model}{2}{subsection.2.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces The term-document matrix for four words in four Shakespeare plays (\cite  {Jurafsky2009}). Each document is represented as a column vector containing values for each term frequency.}}{2}{figure.1}\protected@file@percent }
+\newlabel{fig:tf}{{1}{2}{The term-document matrix for four words in four Shakespeare plays (\cite {Jurafsky2009}). Each document is represented as a column vector containing values for each term frequency}{figure.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}TF-IDF}{2}{subsection.2.2}\protected@file@percent }
+\newlabel{eq:tf}{{2.1}{2}{TF-IDF}{equation.2.1}{}}
+\newlabel{eq:tflog}{{2.2}{2}{TF-IDF}{equation.2.2}{}}
+\newlabel{eq:idf}{{2.3}{2}{TF-IDF}{equation.2.3}{}}
+\citation{scikit-learn}
+\BKM@entry{id=5,dest={73756273656374696F6E2E322E33},srcline={70}}{576F726420456D62656464696E6773}
+\citation{maas-etal-2011-learning}
+\citation{bengio03}
+\citation{pennington2014glove}
+\citation{mikolov2013efficient}
+\citation{mikolov2013distributed}
+\citation{devlin-etal-2019-bert}
+\citation{vaswani2017attention}
+\citation{sanh2020distilbert}
+\citation{hinton2015distilling}
+\BKM@entry{id=6,dest={73756273656374696F6E2E322E34},srcline={80}}{4D756C74696E6F6D69616C204E6169766520426179657320436C6173736966696572}
+\newlabel{eq:tfidf}{{2.4}{3}{TF-IDF}{equation.2.4}{}}
+\newlabel{eq:tfidf_sklearn}{{2.5}{3}{TF-IDF}{equation.2.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Word Embeddings}{3}{subsection.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Multinomial Naive Bayes Classifier}{3}{subsection.2.4}\protected@file@percent }
+\newlabel{eq:prob}{{2.6}{3}{Multinomial Naive Bayes Classifier}{equation.2.6}{}}
+\citation{Jurafsky2009}
+\BKM@entry{id=7,dest={73756273656374696F6E2E322E35},srcline={101}}{4C6F6769737469632052656772657373696F6E}
+\citation{Jurafsky2009}
+\BKM@entry{id=8,dest={73756273656374696F6E2E322E36},srcline={129}}{4C696E65617220537570706F727420566563746F7220436C6173736966696572}
+\newlabel{MLE}{{2.7}{4}{Multinomial Naive Bayes Classifier}{equation.2.7}{}}
+\newlabel{eq:additive}{{2.8}{4}{Multinomial Naive Bayes Classifier}{equation.2.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5}Logistic Regression}{4}{subsection.2.5}\protected@file@percent }
+\newlabel{eq:sigmoid}{{2.9}{4}{Logistic Regression}{equation.2.9}{}}
+\newlabel{eq:db_logreg}{{2.10}{4}{Logistic Regression}{equation.2.10}{}}
+\newlabel{eq:loss}{{2.11}{4}{Logistic Regression}{equation.2.11}{}}
+\citation{hastie01statisticallearning}
+\BKM@entry{id=9,dest={73656374696F6E2E33},srcline={146}}{44617461}
+\citation{maas-etal-2011-learning}
+\citation{maas-etal-2011-learning}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.6}Linear Support Vector Classifier}{5}{subsection.2.6}\protected@file@percent }
+\newlabel{eq:hyperplane}{{2.12}{5}{Linear Support Vector Classifier}{equation.2.12}{}}
+\newlabel{eq:opt}{{2.13}{5}{Linear Support Vector Classifier}{equation.2.13}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Data}{5}{section.3}\protected@file@percent }
+\BKM@entry{id=10,dest={73656374696F6E2E34},srcline={178}}{4D6574686F64}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Overview of the dataset. The reviews shown in the table are from the training set with the top five rows as the first five negative reviews and the five rows below that as the first five positive reviews.}}{6}{table.1}\protected@file@percent }
+\newlabel{table:overview}{{1}{6}{Overview of the dataset. The reviews shown in the table are from the training set with the top five rows as the first five negative reviews and the five rows below that as the first five positive reviews}{table.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Method}{6}{section.4}\protected@file@percent }
+\citation{socher-etal-2013-recursive}
+\citation{mikolov2013distributed}
+\citation{wolf-etal-2020-transformers}
+\BKM@entry{id=11,dest={73656374696F6E2E35},srcline={197}}{526573756C7473}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Results}{7}{section.5}\protected@file@percent }
+\BKM@entry{id=12,dest={73656374696F6E2E36},srcline={220}}{44697363757373696F6E}
+\citation{devlin-etal-2019-bert}
+\citation{iyyer-etal-2015-deep}
+\citation{Arora2017ASB}
+\BKM@entry{id=13,dest={73656374696F6E2E37},srcline={229}}{436F6E636C7573696F6E}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Accuracy of different text vectorization methods on different classifier algorithms.}}{8}{table.2}\protected@file@percent }
+\newlabel{table:results}{{2}{8}{Accuracy of different text vectorization methods on different classifier algorithms}{table.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{8}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion}{8}{section.7}\protected@file@percent }
 \bibdata{ref}
 \bibcite{Jurafsky2009}{{1}{2009}{{Jurafsky and Martin}}{{}}}
-\bibcite{mikolov2013efficient}{{2}{2013}{{Mikolov et~al.}}{{Mikolov, Chen, Corrado, and Dean}}}
-\bibcite{devlin-etal-2019-bert}{{3}{2019}{{Devlin et~al.}}{{Devlin, Chang, Lee, and Toutanova}}}
-\bibcite{maas-etal-2011-learning}{{4}{2011}{{Maas et~al.}}{{Maas, Daly, Pham, Huang, Ng, and Potts}}}
+\bibcite{pennington2014glove}{{2}{2014}{{Pennington et~al.}}{{Pennington, Socher, and Manning}}}
+\bibcite{mikolov2013efficient}{{3}{2013}{{Mikolov et~al.}}{{Mikolov, Chen, Corrado, and Dean}}}
+\bibcite{devlin-etal-2019-bert}{{4}{2019}{{Devlin et~al.}}{{Devlin, Chang, Lee, and Toutanova}}}
+\bibcite{spacy}{{5}{2020}{{Honnibal et~al.}}{{Honnibal, Montani, Van~Landeghem, and Boyd}}}
+\bibcite{sanh2020distilbert}{{6}{2020}{{Sanh et~al.}}{{Sanh, Debut, Chaumond, and Wolf}}}
+\bibcite{scikit-learn}{{7}{2011}{{Pedregosa et~al.}}{{Pedregosa, Varoquaux, Gramfort, Michel, Thirion, Grisel, Blondel, Prettenhofer, Weiss, Dubourg, Vanderplas, Passos, Cournapeau, Brucher, Perrot, and Duchesnay}}}
+\bibcite{maas-etal-2011-learning}{{8}{2011}{{Maas et~al.}}{{Maas, Daly, Pham, Huang, Ng, and Potts}}}
+\bibcite{bengio03}{{9}{2003}{{Bengio et~al.}}{{Bengio, Ducharme, Vincent, and Janvin}}}
+\bibcite{mikolov2013distributed}{{10}{2013a}{{Mikolov et~al.}}{{Mikolov, Sutskever, Chen, Corrado, and Dean}}}
+\bibcite{vaswani2017attention}{{11}{2017}{{Vaswani et~al.}}{{Vaswani, Shazeer, Parmar, Uszkoreit, Jones, Gomez, Kaiser, and Polosukhin}}}
+\bibcite{hinton2015distilling}{{12}{2015}{{Hinton et~al.}}{{Hinton, Vinyals, and Dean}}}
+\bibcite{hastie01statisticallearning}{{13}{2001}{{Hastie et~al.}}{{Hastie, Tibshirani, and Friedman}}}
+\bibcite{socher-etal-2013-recursive}{{14}{2013}{{Socher et~al.}}{{Socher, Perelygin, Wu, Chuang, Manning, Ng, and Potts}}}
+\bibcite{wolf-etal-2020-transformers}{{15}{2020}{{Wolf et~al.}}{{Wolf, Debut, Sanh, Chaumond, Delangue, Moi, Cistac, Rault, Louf, Funtowicz, Davison, Shleifer, von Platen, Ma, Jernite, Plu, Xu, Scao, Gugger, Drame, Lhoest, and Rush}}}
+\bibcite{iyyer-etal-2015-deep}{{16}{2015}{{Iyyer et~al.}}{{Iyyer, Manjunatha, Boyd-Graber, and Daum{\'e}~III}}}
+\bibcite{Arora2017ASB}{{17}{2017}{{Arora et~al.}}{{Arora, Liang, and Ma}}}

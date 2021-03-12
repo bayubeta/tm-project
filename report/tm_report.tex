@@ -198,7 +198,7 @@ The model used is a pre-trained DistilBERT model made available by Hugging Face'
 
 The performances of text vectorization methods are compared in Table \ref{table:results}. It is based on the accuracy of predictions given the test data. We can see that the bag-of-words with TF-IDF method (\texttt{TfidfVectorizer}) paired with logistic regression or linear SVC gives the best results with 88\% accuracy on test data.   
 
-In general, logistic regression and linear SVC give similar performance in every text vectorization methods except in bag-of-words method (\texttt{CountVectorizer}). Although being more complicated models, \texttt{MeanSentenceVectorizer} and DistilBERT do not manage to better \texttt{TfidfVectorizer} and \texttt{CountVectorizer} results on logistic regression and linear SVC.
+In general, logistic regression and linear SVC give similar performance in every text vectorization methods except in bag-of-words method (\texttt{CountVectorizer}). Both \texttt{MeanSentenceVectorizer} and DistilBERT do not manage to get better \texttt{TfidfVectorizer} and \texttt{CountVectorizer} results on logistic regression and linear SVC. On the other hand, the multinomial naive Bayes classifier gives relatively worse accuracy than all other models on all text vectorization methods.
 
 \begin{table}[H]
 	\centering
@@ -215,18 +215,19 @@ In general, logistic regression and linear SVC give similar performance in every
 \caption{Accuracy of different text vectorization methods on different classifier algorithms.}
 \label{table:results}
 \end{table}
-	
-	
+
 	
 \section{Discussion}
-Despite
-	
-	
-	
-	
-	
+Despite being more complicated, \texttt{MeanSentenceVectorizer} and DistilBERT yield similar or even worse results than the relatively simpler bag-of-words methods. This should come in as no surprise since the bag-of-word methods (\texttt{CountVectorizer} and \texttt{TfidfVectorizer}) are fitted to the data rather than used as a method that is pre-trained on a corpus not related to the sentiment analysis problem. Still, they achieve competitive results that can be used as baselines compared to more advanced methods.
+
+In DistilBERT's case (or BERT in general), the standard modelling procedure is to include \textit{fine-tuning} phase where all pre-trained parameters are fine-tuned to better suit the downstream task (\cite{devlin-etal-2019-bert}). However, this is a relatively expensive process that could take hours even with GPUs. This project shows that even without the fine-tuning phase, DistilBERT can still be used in a feature-based approach to produce document-level representations and still achieve a reasonable result for sentiment analysis task.
+
+The same can be said about the word vectors averaging (\texttt{MeanSentenceVectorizer}). It is not sophisticated enough to beat state-of-the-art methods, although it could be a good baseline. This is due to the average of word vectors being unordered, meaning that it ignores the orders of words, hence the context of words in a given document. A couple of methods such as \cite{iyyer-etal-2015-deep} and \cite{Arora2017ASB} took a similar approach but managed to achieve comparable results to more sophisticated models including RNN and LSTM while also being simpler and faster.
+
+Ultimately, bag-of-words based method is still a reliable way to vectorize texts for a sentiment analysis task. Its strength lies in its speed to represent texts numerically. This makes it an ideal method for baseline.
 	
 \section{Conclusion}
+In this project, four different text vectorization methods (bag-of-words, bag-of-words with tf-idf weights, average of word vectors, and DistilBERT) are compared in terms of their performance in a sentiment analysis task. Bag-of-words with tf-idf weights managed to get the best results with 88\% accuracy using logistic regression and linear support vector classifier. On the other hand, pre-trained methods (average of word vectors, and DistilBERT) performed similarly if not worse than the other two methods.
 	
 
 \newpage
