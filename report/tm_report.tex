@@ -3,6 +3,7 @@
 \usepackage{amsmath, amsfonts, amssymb, bbm, graphicx, hyperref, booktabs, float}
 \numberwithin{equation}{section}
 \bibliographystyle{unsrtnat}
+\DeclareMathOperator*{\argmax}{argmax}
 
 %opening
 \title{Comparing Text Vectorization Techniques for Sentiment Analysis Task}
@@ -16,24 +17,137 @@
 \section{Introduction}
 Text classification is a recurring problem in the natural language processing field. One of its many applications is sentiment analysis which tries to identify the subjective information in a given word or text. The usual task for sentiment analysis is classifying polarization of a text e.g. whether a text has positive or negative sentiment.   
 
-Generally, given a collection of $N$ documents paired with its class, $(d_1, c_1), (d_2, c_2), ..., \allowbreak (d_N, c_N)$, we want to find a classifier $f$ that takes $d$ as an input and gives us a correct class $c \in C$. There is a wide range of classifier suitable for this task. However, we first need to represent the documents numerically before we can feed them into classifiers.  
+Generally, given a collection of $N$ documents paired with its class, $(d_1, c_1), ..., \allowbreak (d_N, c_N)$, we want to find a classifier $f$ that takes $d$ as an input and gives us a correct class $c \in C$. There is a wide range of classifier suitable for this task. However, we first need to represent the documents numerically before we can feed them into classifiers.  
 
-There are many ways to represent documents as vectors. The simplest one is to represent a document as a set of unordered words along with their frequency, also known as \textit{bag-of-words}. In this way, all documents can be represented as vectors of same length in which each element represents a frequency of a term in a given document. The term frequency can also be weighted by its \textit{inverse document frequency} (\textit{idf}) which takes into account the frequency of the term appearing in the collection. The product of term frequency and its \textit{idf} results in \textit{tf-idf} value (\cite{Jurafsky2009}).
+There are many ways to represent documents as vectors. The simplest one is to represent a document as a set of unordered words along with their frequency, also known as bag-of-words. The documents are represented as vectors of same length in which each element represents a frequency of a term in a given document. The term frequency (tf) can also be weighted by its inverse document frequency (idf) which takes into account the frequency of the term appearing in the collection. The product of tf and its idf results in tf-idf value (\cite{Jurafsky2009}).
 
-Another way is to represent words as dense vectors of dimension much smaller than the size of vocabulary. Word embeddings techniques like \textit{word2vec} (\cite{mikolov2013efficient}) allows us to learn similarities between words that can be useful in a classification task. It is also possible to learn contextual embedding as done in \textit{BERT} (\cite{devlin-etal-2019-bert}) where each word can have different representation depending on contexts.  
+Word embeddings techniques such as GloVe (\cite{pennington2014glove}) and word2vec (\cite{mikolov2013efficient}) allows us to represent words as dense vectors and learn similarities between them. It is also possible to learn contextual embedding as done in BERT (\cite{devlin-etal-2019-bert}) where each word can have different representation depending on contexts.  
 
-In this project, different techniques for representing texts as vectors will be compared: bag-of-words, tf-idf, word2vec, and BERT. In the case of word2vec, the average of word vectors will be used to represent individual document. In BERT's case, the final hidden state of special classifier token ([\texttt{CLS}]) can be used as the document's representation. They will be compared in terms of their performance in a sentiment analysis task using different classifier models: multinomial naïve Bayes, logistic regression, and linear support vector machine (SVM). 
+In this project, different techniques for representing texts as vectors will be compared: bag-of-words with tf, bag-of-words with tf-idf weights, word embedding using spaCy's pre-trained word vectors (\cite{spacy}), and DistilBERT (\cite{sanh2020distilbert}), a smaller version of BERT. In the case of word embedding, the average of word vectors will be used to represent individual document. In DistilBERT's case, the final hidden state of special classifier token ([\texttt{CLS}]) can be used as the document's representation. They will be compared in terms of their performance in a sentiment analysis task using different classifier models: multinomial naive Bayes, logistic regression, and linear support vector machine (SVM). 
 
 \section{Theory}
 
+\subsection{Term Frequency and Bag-of-words Model}
+A collection of documents can be viewed as a term-document matrix, where the columns represent documents and the rows represent words in the vocabulary. Each element in the matrix contains the term frequency or the number of times the word appears in the document. Hence, each column of the matrix can be considered as a point in a $|V|$-dimensional vector space, where $|V|$ is the vocabulary size (\cite{Jurafsky2009}). Using this representation, a document is represented as a bag-of-words, which only keeps the frequency of terms but the orders are neglected.
+
+\begin{figure}[H]
+	\begin{center}
+	\includegraphics{td_matrix.png}
+	\caption{The term-document matrix for four words in four Shakespeare plays (\cite{Jurafsky2009}). Each document is represented as a column vector containing values for each term frequency.}
+	\label{fig:tf}
+	\end{center}
+\end{figure}
 
 
+
+\subsection{TF-IDF}
+In Figure \ref{fig:tf}, each document is represented by the frequencies of its words. However, not all words are relevant as discriminators just because they are abundant (e.g. the, at, in). Hence, rather than using raw frequency values, we can introduce weights to make some terms more relevant than the others.   
+First, we define the term frequency for the word $t$ and document $d$ as:
+\begin{equation}\label{eq:tf}
+	\text{tf}_{t,d} = \text{count}(t,d).
+\end{equation}
+One way to reduce the impact of highly-occuring terms is to apply the log function to \eqref{eq:tf}:
+\begin{equation}\label{eq:tflog}
+	\text{tf}_{t,d} = \log_{10}(\text{count}(t,d)+1).
+\end{equation}
+With this weight, a term with 100 times more occurence will only have 2 times the weight.   
+
+Another way to weight frequencies is to use inverse document frequency (idf):
+\begin{equation}\label{eq:idf}
+	\text{idf}_t = \log_{10}\left( \frac{N}{\text{df}_t} \right)
+\end{equation}
+where $N$ is the total number of documents in the collection and $\text{df}_t$ is the number of documents in which term $t$ appears. This gives more importance to terms that are less likely to be found on many documents. Finally, the product of \eqref{eq:tflog} and \eqref{eq:idf} is the tf-idf weight:
+\begin{equation}\label{eq:tfidf}
+	\text{tf-idf}_{t,d} = \text{tf}_{t,d} \times \text{idf}_t.
+\end{equation}
+In the \texttt{scikit-learn} package (\cite{scikit-learn}) tf-idf function is defined by default as:
+\begin{equation}\label{eq:tfidf_sklearn}
+	\text{tf-idf}_{t,d} = \text{count}(t,d) \times \log\left( \frac{N+1}{\text{df}_t+1} +1\right).
+\end{equation}
+
+
+
+\subsection{Word Embeddings}
+Word embeddings allow us to represent words as dense vectors with a significantly smaller dimension than the size of vocabulary. Besides that, they also encode similarities between words in a high-dimensional space (\cite{maas-etal-2011-learning}). There are many ways to generate the mapping. \cite{bengio03} used neural model to learn a distributed representation for each word together with its probability function for word sequences. GloVe (\cite{pennington2014glove}) used global word-word co-occurence matrix from a corpus to produce a vector space. In word2vec (\cite{mikolov2013efficient}, \cite{mikolov2013distributed}), word embeddings are learned using two kinds of method: continuous bag-of-word model and continuous skip gram model. Continuous bag-of-word model (CBOW) predicts a word between multiple context words. Continuous skip gram model predicts words before and after the current word.
+
+All the examples mentioned above are context-free embeddings, where a model learns a fixed representation for each word no matter the contexts. To generate contextual word embeddings, we need a model that can learn a representation of a word based on other words in the sentence.   
+
+BERT (\cite{devlin-etal-2019-bert}) uses multi-layer bidirectional Transformer (\cite{vaswani2017attention}) to learn contextual word representations. Standard approaches to train language models using BERT includes pre-training with a large, unlabelled dataset and fine-tuning the model on a smaller, labelled dataset. A pre-trained BERT model can also be used as a feature-based model, where it generates activation values based on a sequence of tokenized words corresponding to a sentence. These activation values are contextual embeddings that can be used as inputs for other models.   
+
+A smaller and faster variant of BERT is DistilBERT (\cite{sanh2020distilbert}). By reducing the size of a BERT model and using knowledge distillation (\cite{hinton2015distilling}) in the pre-training, it managed to achieve similar performance while also being faster.
+
+
+\subsection{Multinomial Naive Bayes Classifier}
+A naive bayes classifier uses the naive assumption that all features are mutually independent given a class $c \in C$. The best class $c$ given a set of words $w$ is described as:
+\begin{equation}\label{eq:prob}
+	c_{NB} =  \argmax_{c \in C}p(c|w) = \argmax_{c \in C} p(c) \displaystyle\prod_{w \in V} p(w|c)
+\end{equation}
+where $w$ are words in the vocabulary $V$. The maximum likelihood estimates for $p(c)$ and $p(w|c)$ are given by:
+\begin{equation}\label{MLE}
+\begin{split}
+	\hat{p}(c) &= \frac{N_c}{N_{doc}} \\
+	\hat{p}(w_i|c) &= \frac{\text{count}(w_i,c)}{\sum_{w \in V}\text{count}(w,c)}
+\end{split}
+\end{equation}
+where $N_c$ is the number of documents in class c, $N_{doc}$ is the total number of documents, and $\text{count}(w_i,c)$ is the number of occurrences of word $w_i$ in all documents that belong to class $c$.   
+
+To deal with words that are not in training data, an additive term is used in $\hat{p}(w_i|c)$ so that $p(c|w)$ is not multiplied to zero:
+\begin{equation}\label{eq:additive}
+	\hat{p}(w_i|c) = \frac{\text{count}(w_i,c)+1}{(\sum_{w \in V}\text{count}(w,c))+|V|}
+\end{equation}
+(\cite{Jurafsky2009}).
+
+
+\subsection{Logistic Regression}
+Given an observation $\textbf{x} = (x_1, ..., x_n)$ and classes $y \in \{0,1\}$, we want to find the probability of the observation is from each class, $p(y|\textbf{x})$. In this case, $p(y=1|\textbf{x})$ could be the probability of "positive sentiment" and $p(y=0|\textbf{x})$ is for "negative sentiment". To model the probability using linear functions of $\textbf{x}$, we can use the sigmoid function so the output is going to be in the range [0,1]:
+\begin{equation}\label{eq:sigmoid}
+\begin{split}
+	p(y=1|\textbf{x}) &= \boldsymbol{\sigma}(w \cdot \textbf{x} + b) \\
+	&= \frac{1}{1+\exp(-(w \cdot \textbf{x} + b))} \\
+	p(y=0|\textbf{x}) &= 1 - \boldsymbol{\sigma}(w \cdot \textbf{x} + b) \\
+	&= 1 - \frac{1}{1+\exp(-(w \cdot \textbf{x} + b))} \\
+	 &= \frac{\exp(-(w \cdot \textbf{x} + b))}{1+\exp(-(w \cdot \textbf{x} + b))}
+\end{split}
+\end{equation}
+for a set of weights $w$ and a bias term $b$. We define our decision boundary as:
+\begin{equation}\label{eq:db_logreg}
+	\hat{y} = \begin{cases}
+		1 \quad p(y=1|\textbf{x})>0.5 \\
+		0 \quad \text{otherwise}
+	\end{cases}
+\end{equation}
+To learn $w$ and $b$, we first define a loss function:
+\begin{equation}\label{eq:loss}
+\begin{split}
+	L(\hat{y},y) &= -[y\log\hat{y}+(1-y) \log(1-\hat{y})] \\
+	&= -[y\log\boldsymbol{\sigma}(w \cdot \textbf{x} + b)+(1-y) \log(1-\boldsymbol{\sigma}(w \cdot \textbf{x} + b))]
+\end{split}
+\end{equation}
+and use an optimizer algorithm to find $w$ and $b$ that minimize the loss function given labels $y$ and our predictions $\hat{y}$ (\cite{Jurafsky2009}). By default, \texttt{scikit-learn} uses Limited-memory  Broyden–Fletcher–Goldfarb–Shanno algorithm (L-BFGS).
+
+
+\subsection{Linear Support Vector Classifier}
+Suppose that we have $n$ pairs of training data $(\textbf{x}_1,y_1), ..., (\textbf{x}_n, y_n)$, where $\textbf{x}_i \in \mathbb{R}^p$ and $y_i \in \{-1,1\}$. Define the classification rule in the hyperplane as:
+\begin{equation}\label{eq:hyperplane}
+	\hat{y} = \begin{cases}
+		1 \quad w \cdot \textbf{x} + b > 0 \\
+		-1 \quad w \cdot \textbf{x} + b < 0 \\
+	\end{cases}
+\end{equation} 
+where $||w|| = 1$. We can find a hyperplane that creates the biggest margin between classes 1 and -1 by performing optimization problem:
+\begin{equation}\label{eq:opt}
+\begin{split}
+	&\min_{w,b} ||w|| \\
+	&\text{subject to} \; y_i(w \cdot \textbf{x}_i + b) \geq 1, \; i=1,...,n
+\end{split}
+\end{equation} 
+(\cite{hastie01statisticallearning}).
 
 \section{Data}
 
 The dataset used is a collection of 50,000 movie reviews along with its sentiment from Internet Movie Database (IMDB) (\cite{maas-etal-2011-learning}). It is split evenly into 25,000 reviews in the training and test set. There is also a balanced number of negative and positive reviews in each set.   
 
-Instead of taking into account all kinds of reviews, \cite{maas-etal-2011-learning} only collected highly-polarized reviews, that is, only reviews that are considered negative and positive are included. A negative review has an IMDB score of $\leq 4$ while a positive one has a score of $\geq 7$. The scores are in the range of $[0,10]$. Since it is a case of balanced dataset where the classes are split evenly in training and test dataset, the expected accuracy of a random classifier will be around $50\%$.
+Instead of taking into account all kinds of reviews, \cite{maas-etal-2011-learning} only collected highly-polarized reviews, that is, only reviews that are considered negative and positive are included. A negative review has an IMDB score of $\leq 4$ while a positive one has a score of $\geq 7$. The scores are in the range of $[0,10]$. Since it is a case of balanced dataset where the classes are split evenly in training and test dataset, the expected accuracy of a random classifier will be around $50\%$. Overview of the training data can be seen in Table \ref{table:overview}.
 
 
 \begin{table}[H]
@@ -62,27 +176,50 @@ Instead of taking into account all kinds of reviews, \cite{maas-etal-2011-learni
 
 
 \section{Method}
+In this section, the technicalities behind the experiment will be discussed. In general, the same training and test set will be used for all classifier methods. Since they already comes in same sizes, a further split is not needed. The accuracy of each classifier in each method will then be calculated using \texttt{scikit-learn}'s \texttt{classification\_report}. For each text vectorization method, all three classifiers will be used except for word embeddings and DistilBERT that are not compatible with multinomial naive Bayes classifier which does not accept negative values.   
 
+All classifiers (multinomial naive Bayes, logistic regression, and linear SVC) uses \texttt{scikit-learn}'s implementations with default settings. Specifically for logistic regression and linear SVC, the parameter \texttt{random\_state} will be set to 1234 so the results are reproducible. A classifier will be trained on the training data and the accuracy of predicted classes based on the test data will be measured. The baseline random classifier is expected to achieve accuracy of around 50\% since the classes are balanced.
 
+\subsection*{Bag-of-words}
+The \texttt{CountVectorizer} method from \texttt{scikit-learn} transforms a given review text into a sparse vector of the same length as the number of words in the vocabulary of training data. This transforms each text into a "bag of words" containing word frequencies. Default parameters will be used for this method.
 
+\subsection*{Bag-of-words with TF-IDF}
+This method is essentially similar to the previously mentioned bag-of-words but each word will have its own weight. The \texttt{TfidfVectorizer} method is used to transform each review text into a sparse vector of weighted frequencies. Default parameters are also used for this method.
+
+\subsection*{Word Embeddings using spaCy Pre-trained Vectors}
+Pre-trained word embeddings from \texttt{spaCy} is used to transform each word into a 300-dimensional length vector. It is done by using \texttt{spaCy}'s large english pipeline that was pre-trained on web-text, \texttt{en\_core\_web\_lg}. To make a representation of a review text, the average of vectors of all words in that text will be used. This method is commonly used as a cheap and fast method and as a baseline to be compared with more advanced document-level representation methods (\cite{socher-etal-2013-recursive}, \cite{mikolov2013distributed}). The process is done by creating a method called \texttt{MeanSentenceVectorizer} that is compatible to be used in \texttt{scikit-learn}'s \texttt{pipeline} method.
+
+\subsection*{DistilBERT}
+The model used is a pre-trained DistilBERT model made available by Hugging Face's \texttt{transformers} package (\cite{wolf-etal-2020-transformers}). Each text will be feed to a tokenizer that is also available from \texttt{transformers}. The maximum number of tokens is set to 512. The tokenized text will be fed to the DistilBERT encoder and each tokenized word will have activation units that can be used as a vector representation, including the special token [\texttt{CLS}] that represents the whole text. The activation units for [\texttt{CLS}] is then used as features for classifier algorithms.   
 
 
 
 \section{Results}
-	
-	
-	
-	
-	
-	
-	
+
+The performances of text vectorization methods are compared in Table \ref{table:results}. It is based on the accuracy of predictions given the test data. We can see that the bag-of-words with TF-IDF method (\texttt{TfidfVectorizer}) paired with logistic regression or linear SVC gives the best results with 88\% accuracy on test data.   
+
+In general, logistic regression and linear SVC give similar performance in every text vectorization methods except in bag-of-words method (\texttt{CountVectorizer}). Although being more complicated models, \texttt{MeanSentenceVectorizer} and DistilBERT do not manage to better \texttt{TfidfVectorizer} and \texttt{CountVectorizer} results on logistic regression and linear SVC.
+
+\begin{table}[H]
+	\centering
+\begin{tabular}{cccc}
+	\toprule
+	{} & MultinomialNB &  LogisticRegression &  LinearSVC \\
+	\midrule
+	CountVectorizer        &          0.82 &                0.86 &       0.85 \\
+	TfidfVectorizer        &          0.83 &                0.88 &       0.88 \\
+	MeanSentenceVectorizer &             - &                0.85 &       0.85 \\
+	DistilBERT             &             - &                0.85 &       0.85 \\
+	\bottomrule
+\end{tabular}
+\caption{Accuracy of different text vectorization methods on different classifier algorithms.}
+\label{table:results}
+\end{table}
 	
 	
 	
 \section{Discussion}
-	
-	
-	
+Despite
 	
 	
 	
