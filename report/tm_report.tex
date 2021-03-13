@@ -11,8 +11,34 @@
 \author{Bayu Brahmantio (baybr878)}
 
 \begin{document}
+
+
+\begin{titlepage}
+	\centering
+	\par
+	\vspace*{5cm}
+	{\huge\bfseries Comparing Text Vectorization Techniques for Sentiment Analysis Task\par}
+	\vspace{0.5cm}
+	{\Large 732A92 Text Mining Project Report\par}
+	\vspace{4cm}
+	{\Large\bfseries Bayu Beta Brahmantio (baybr878)\par}
+
 	
-\maketitle
+	\vfill
+	{\Large Department of Computer and Information Science\par}
+	{\Large Linköping University\par}
+	{\Large \today\par}
+\end{titlepage}
+
+\thispagestyle{plain}
+\vspace*{\fill}
+\begin{center}
+	\textbf{Abstract}
+\end{center}
+Numerical representation of texts as vectors is necessary for text classification tasks, including sentiment analysis. This project compares the performance of different classifiers on IMDB review dataset based on four text vectorization methods: bag-of-words, bag-of-words with tf-idf weights, average of word vectors, and DistilBERT. The results showed that tf-idf vectorizer paired with logistic regression or linear support vector classifier has the best result with 88\% accuracy on the test data.
+\vfill
+
+\newpage
 	
 \section{Introduction}
 Text classification is a recurring problem in the natural language processing field. One of its many applications is sentiment analysis which tries to identify the subjective information in a given word or text. The usual task for sentiment analysis is classifying polarization of a text e.g. whether a text has positive or negative sentiment.   
@@ -228,7 +254,9 @@ Ultimately, bag-of-words based method is still a reliable way to vectorize texts
 	
 \section{Conclusion}
 In this project, four different text vectorization methods (bag-of-words, bag-of-words with tf-idf weights, average of word vectors, and DistilBERT) are compared in terms of their performance in a sentiment analysis task. Bag-of-words with tf-idf weights managed to get the best results with 88\% accuracy using logistic regression and linear support vector classifier. On the other hand, pre-trained methods (average of word vectors, and DistilBERT) performed similarly if not worse than the other two methods.
-	
+
+\section{Appendix}
+All codes and dataset are available in this \href{https://github.com/bayubeta/tm-project/tree/main/code}{repository}
 
 \newpage
 \bibliography{ref}
